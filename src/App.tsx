@@ -9,7 +9,7 @@ function App() {
     return (
         <>
         <p>Geohash</p>
-        <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+        <MapContainer center={[24, 46]} zoom={5} scrollWheelZoom={false}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
