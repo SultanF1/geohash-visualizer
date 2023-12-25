@@ -9,6 +9,17 @@ import React from "react";
 function MyComponent() {
     const map = useMap()
     console.log('map center:', map.getCenter())
+
+    map.on('contextmenu', function (e) {
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Circle) {
+                map.removeLayer(layer)
+            }
+        })
+        const circle = L.circle(e.latlng, { radius: 20 }).addTo(map)
+        circle.bindPopup(`lat: ${e.latlng.lat}<br>lon: ${e.latlng.lng}`).openPopup()
+    })
+
     return null
 }
 
