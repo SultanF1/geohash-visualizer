@@ -1,7 +1,4 @@
-// Copyright 2019 Alexander Berezovsky
-// License: http://opensource.org/licenses/MIT
-
-import { LatLngArea, LatLngPoint } from './types'
+import {LatLngArea, LatLngPoint} from './types'
 
 export const GEOHASH_EVEN_DICT = "bcfguvyz89destwx2367kmqr0145hjnp"
 export const GEOHASH_ODD_DICT = "prxznqwyjmtvhksu57eg46df139c028b"
@@ -26,12 +23,12 @@ export function validateGeohash(geohash: string): GeohashValidationStatus {
 
 export function geohashToArea(geohash: string): LatLngArea | null {
     if (geohash.trim().length === 0) {
-        return { start: { lat: 72, lng: -180 }, end: { lat: -72, lng: 180 } }
+        return {start: {lat: 72, lng: -180}, end: {lat: -72, lng: 180}}
     }
 
     for (let i = 0,
-        length = geohash.length, latSectionDeg = 180, lngSectionDeg = 360, latOffset = 90, lngOffset = -180;
-        i < length; i++) {
+             length = geohash.length, latSectionDeg = 180, lngSectionDeg = 360, latOffset = 90, lngOffset = -180;
+         i < length; i++) {
 
         const odd = i % 2
         const geohashDict = odd ? GEOHASH_ODD_DICT : GEOHASH_EVEN_DICT
@@ -54,8 +51,8 @@ export function geohashToArea(geohash: string): LatLngArea | null {
 
         if (length - 1 == i) {
             return {
-                start: { lat: latOffset, lng: lngOffset, },
-                end: { lat: latOffset - latSectionDeg, lng: lngOffset + lngSectionDeg, }
+                start: {lat: latOffset, lng: lngOffset,},
+                end: {lat: latOffset - latSectionDeg, lng: lngOffset + lngSectionDeg,}
             }
         }
     }
@@ -64,7 +61,7 @@ export function geohashToArea(geohash: string): LatLngArea | null {
 }
 
 export function getCenterPoint(area: LatLngArea): LatLngPoint {
-    const maxMin = (val1: number, val2: number) => val1 > val2 ? { max: val1, min: val2 } : { max: val2, min: val1 }
+    const maxMin = (val1: number, val2: number) => val1 > val2 ? {max: val1, min: val2} : {max: val2, min: val1}
 
     const latPoints = maxMin(area.start.lat, area.end.lat)
     const lngPoints = maxMin(area.start.lng, area.end.lng)

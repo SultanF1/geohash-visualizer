@@ -65,7 +65,8 @@ function Form() {
                         setGeohashInput(!geohashInput)
                     }}
                     type="default"
-                    style={{width: "15%"}}
+                    // make the background color white
+                    style={{width: "15%", backgroundColor: "white"}}
                 >
                     {geohashInput ? "Coordinates" : "Geohash"}
                 </Button>
