@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geohash-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: geohash
+  template:
+    metadata:
+      labels:
+        app: geohash
+    spec:
+      containers:
+        - name: geohash
+          image: 317481732767.dkr.ecr.eu-central-1.amazonaws.com/geohash:latest
+          resources:
+            limits:
+              memory: "356Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
