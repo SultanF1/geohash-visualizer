@@ -67,6 +67,7 @@ function MyComponent() {
                 layer.setStyle({color: 'green'})
 
                 map.fitBounds(layer.getBounds())
+
             }
         })
 
@@ -93,6 +94,8 @@ function MyComponent() {
         const rectangle = L.rectangle([[north, west], [south, east]], {color: "red", weight: 1});
         // @ts-ignore
         rectangle['_isBounds'] = true
+
+        rectangle.bindPopup(`east: ${east}<br>west: ${west}<br>north: ${north}<br>south: ${south}`).openPopup()
 
         rectangle.addTo(map)
 
