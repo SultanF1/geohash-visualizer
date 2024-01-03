@@ -35,29 +35,31 @@ function MyComponent() {
             }
         })
 
+
         if (currentGeohash != lastGeoHash) {
             map.eachLayer(function (layer) {
                 if (layer instanceof L.Rectangle) {
                     map.removeLayer(layer)
                 }
             })
-            let targetArea = gridManager.displayGrid(currentGeohash.toLowerCase().trim())
-
-            const [[startLat, startLng], [endLat, endLng]] = targetArea
-            let area = {start: {lat: startLat, lng: startLng}, end: {lat: endLat, lng: endLng}}
-
-            const mapNorthWest = map.getBounds().getNorthWest()
-            const mapSouthEast = map.getBounds().getSouthEast()
-
-            const updateNorthWest = area.start.lat != mapNorthWest.lat || area.start.lng != mapNorthWest.lng
-            const updateSouthEast = area.end.lat != mapSouthEast.lat || area.end.lng != mapSouthEast.lng
-
-            if (updateNorthWest || updateSouthEast) {
-                map.fitBounds([[area.start.lat, area.start.lng], [area.end.lat, area.end.lng]])
-            }
-
-            setLastGeoHash(currentGeohash)
         }
+
+        let targetArea = gridManager.displayGrid(currentGeohash.toLowerCase().trim())
+
+        const [[startLat, startLng], [endLat, endLng]] = targetArea
+        let area = {start: {lat: startLat, lng: startLng}, end: {lat: endLat, lng: endLng}}
+
+        const mapNorthWest = map.getBounds().getNorthWest()
+        const mapSouthEast = map.getBounds().getSouthEast()
+
+        const updateNorthWest = area.start.lat != mapNorthWest.lat || area.start.lng != mapNorthWest.lng
+        const updateSouthEast = area.end.lat != mapSouthEast.lat || area.end.lng != mapSouthEast.lng
+
+        if (updateNorthWest || updateSouthEast) {
+            map.fitBounds([[area.start.lat, area.start.lng], [area.end.lat, area.end.lng]])
+        }
+
+        setLastGeoHash(currentGeohash)
 
         const timer = setTimeout(() => {
             console.log('This will run after 1 second!')
@@ -90,7 +92,7 @@ function MyMapComponent() {
                 style={{
                     zIndex: 10000
                 }}>
-                <Form />
+                <Form/>
             </div>
             <MapContainer center={[24, 46]} zoom={10} scrollWheelZoom={false}>
                 <MyComponent/>
