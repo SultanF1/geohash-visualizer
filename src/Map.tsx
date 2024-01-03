@@ -26,16 +26,6 @@ function MyComponent() {
         if (currentGeohash.length > 4)
             return
 
-        map.eachLayer(function (layer) {
-            // @ts-ignore
-            if (layer instanceof L.Polygon && layer['_geohash'] == null) {
-                const bounds = layer.getBounds()
-                layer.bindPopup(`east: ${bounds.getEast()}<br>west: ${bounds.getWest()}<br>north: ${bounds.getNorth()}<br>south: ${bounds.getSouth()}`).openPopup()
-                layer.setStyle({color: 'green'})
-            }
-        })
-
-
         if (currentGeohash != lastGeoHash) {
             map.eachLayer(function (layer) {
                 if (layer instanceof L.Rectangle) {
@@ -63,10 +53,53 @@ function MyComponent() {
 
         const timer = setTimeout(() => {
             console.log('This will run after 1 second!')
-        }, 50);
+        }, 100);
 
         return () => clearTimeout(timer);
-    }, [searchParams]);
+    }, [searchParams.get("geohash")])
+
+    useEffect(() => {
+        map.eachLayer(function (layer) {
+            // @ts-ignore
+            if (layer instanceof L.Polygon && layer['_geohash'] == null) {
+                const bounds = layer.getBounds()
+                layer.bindPopup(`east: ${bounds.getEast()}<br>west: ${bounds.getWest()}<br>north: ${bounds.getNorth()}<br>south: ${bounds.getSouth()}`).openPopup()
+                layer.setStyle({color: 'green'})
+
+                map.fitBounds(layer.getBounds())
+            }
+        })
+
+    }, [searchParams.get("numDrawings")])
+
+
+    useEffect(() => {
+        map.eachLayer(function (layer) {
+            // @ts-ignore
+            if (layer instanceof L.Rectangle && layer['_isBounds']) {
+                map.removeLayer(layer)
+            }
+        })
+
+
+        if (searchParams.get("north") == null || searchParams.get("south") == null || searchParams.get("east") == null || searchParams.get("west") == null)
+            return
+
+        const north = parseFloat(searchParams.get("north") || "")
+        const south = parseFloat(searchParams.get("south") || "")
+        const east = parseFloat(searchParams.get("east") || "")
+        const west = parseFloat(searchParams.get("west") || "")
+
+        const rectangle = L.rectangle([[north, west], [south, east]], {color: "red", weight: 1});
+        // @ts-ignore
+        rectangle['_isBounds'] = true
+
+        rectangle.addTo(map)
+
+        map.fitBounds(rectangle.getBounds())
+
+    }, [searchParams.get("north"), searchParams.get("south"), searchParams.get("east"), searchParams.get("west")])
+
 
     map.removeControl(map['attributionControl'])
 

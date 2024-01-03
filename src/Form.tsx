@@ -7,9 +7,22 @@ function Form() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [geohashInput, setGeohashInput] = useState<boolean>(true);
 
+
     const handleSubmit = (geohash: string) => {
         setSearchParams({geohash: geohash});
     };
+
+    const clearGeohash = () => {
+        setSearchParams({geohash: ""});
+    }
+
+    const clearCoordinates = () => {
+        searchParams.delete("north")
+        searchParams.delete("south")
+        searchParams.delete("east")
+        searchParams.delete("west")
+        setSearchParams(searchParams)
+    }
 
 
     return (
@@ -33,6 +46,10 @@ function Form() {
                             type="text"
                             placeholder="north"
                             style={{width: "15%"}}
+                            onChange={(e) => {
+                                    searchParams.set("north", e.target.value)
+                                    setSearchParams(searchParams)
+                            }}
                         />
                     </Row>
 
@@ -41,11 +58,19 @@ function Form() {
                             type="text"
                             placeholder="west"
                             style={{width: "15%"}}
+                            onChange={(e) => {
+                                searchParams.set("west", e.target.value)
+                                setSearchParams(searchParams)
+                            }}
                         />
                         <Input
                             type="text"
                             placeholder="east"
                             style={{width: "15%"}}
+                            onChange={(e) => {
+                                searchParams.set("east", e.target.value)
+                                setSearchParams(searchParams)
+                            }}
                         />
                     </Row>
 
@@ -54,6 +79,10 @@ function Form() {
                             type="text"
                             placeholder="south"
                             style={{width: "15%"}}
+                            onChange={(e) => {
+                                searchParams.set("south", e.target.value)
+                                setSearchParams(searchParams)
+                            }}
                         />
                     </Row>
                 </Col>
@@ -63,6 +92,7 @@ function Form() {
                 <Button
                     onClick={() => {
                         setGeohashInput(!geohashInput)
+                        geohashInput ? clearGeohash() : clearCoordinates()
                     }}
                     type="default"
                     // make the background color white
