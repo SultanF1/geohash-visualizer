@@ -14,9 +14,10 @@ export class Grid {
     private map: L.Map
 
     private area: L.LatLngBoundsLiteral
-    private rectangle: L.Rectangle
+    // @ts-ignore
+    private rectangle: Rectangle
 
-    private children: { [key: string]: Grid } = {}
+    private children: {} = {}
 
     private listener: (target: GridTarget) => void
 
@@ -29,29 +30,43 @@ export class Grid {
 
     displayFlat(geohash: string, label: string) {
         if (Object.keys(this.children).length > 0) {
+            console.log("Grid.displayFlat() do remove")
             this.remove()
         }
         if (!this.rectangle) {
             this.rectangle = L.rectangle(this.area, { renderer: Grid.renderer })
             // @ts-ignore
             this.rectangle['_text'] = label
-            if (this.listener) {
-                this.rectangle.addEventListener('click', (e) => {
-                    this.listener({ area: this.area, geohash })
-                })
-            }
+            this.rectangle['_geohash'] = geohash
+
 
             const style = {
                 fillOpacity: 0.0,
-                weight: 1
+                weight: 1,
             }
             this.rectangle.setStyle(style as L.PathOptions);
+
+            if (geohash.length <= 4){
+            this.rectangle.addEventListener('dblclick', (e: { target: { [x: string]: any; }; }) => {
+                this.listener({ area: this.area, geohash })
+            })}
+
+            this.rectangle.addEventListener('contextmenu', (e: { target: { [x: string]: any; }; }) => {
+                const bounds = e.target['_bounds']
+                const center = bounds.getCenter()
+                const popup = L.popup()
+                    .setLatLng(center)
+                    .setContent(`valid_partition = ${geohash.substring(0,2)}`)
+                    .openOn(this.map);
+            })
+
+
             this.map.addLayer(this.rectangle)
+
         }
     }
 
     displayGrid(geohash: string = "", offset: number = 0): L.LatLngBoundsLiteral {
-
         if (this.rectangle) {
             this.remove()
         }
@@ -59,23 +74,8 @@ export class Grid {
         let targetArea = this.appendGrid(this.area, geohash, offset)
 
         if (Grid.GEOHASH_ODD_DICT.indexOf(geohash.charAt(offset)) === -1) {
-            this.rectangle = L.rectangle(this.area)
-            this.rectangle.setStyle({
-                className: 'disable-pointer-events',
-                color: '#dc3545',
-                fillOpacity: 0.3,
-                weight: 4
-            })
-            this.map.addLayer(this.rectangle)
             targetArea = this.area
         } else if (offset !== 0 && geohash.length == offset) {
-            this.rectangle = L.rectangle(this.area)
-            this.rectangle.setStyle({
-                className: 'disable-pointer-events',
-                fillOpacity: 0.0,
-                weight: 4
-            })
-            this.map.addLayer(this.rectangle)
             targetArea = this.area
         }
 
@@ -135,10 +135,15 @@ export class Grid {
         // @ts-ignore
         this.rectangle = null
         for (const key of Object.keys(this.children)) {
+
+            // @ts-ignore
             this.children[key].remove()
         }
         this.children = {}
     }
-}
 
-export {}
+
+    displayTemp(geohash: string) {
+        this.displayGrid(geohash + "-")
+    }
+}

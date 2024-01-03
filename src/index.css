@@ -5,16 +5,6 @@
     width: 100vw;
 }
 
-/* .leaflet-container {
-  height: 600px;
-  width: 100%;
-}
-
-.leaflet-div-icon {
-  background: transparent;
-  border: none;
-} */
-
 body {
     padding: 0;
     margin: 0;
@@ -27,4 +17,38 @@ body {
     width: 100vw;
     max-width: 100%;
     max-height: 100%;
+}
+
+.center-bottom {
+    position: absolute;
+    width: 50%;
+    bottom: 0;
+    padding-bottom: 7vh;
+    zIndex: 10000;
+    left: 45%;
+}
+
+.center-bottom-small {
+    position: absolute;
+    width: 50%;
+    bottom: 0;
+    padding-bottom: 1vh;
+    zIndex: 10000;
+    left: 46%;
+}
+
+.center-coordinates {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    bottom: 0;
+    padding-bottom: 7vh;
+    zIndex: 10000;
+}
+
+.center {
+    position: absolute;
+    width: 50%;
+    left: 45%;
+    zIndex: 10000;
 }
