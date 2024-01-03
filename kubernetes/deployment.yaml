@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: geohash-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: geohash
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: geohash
-          image: 317481732767.dkr.ecr.eu-central-1.amazonaws.com/geohash:latest
+          image: 317481732767.dkr.ecr.eu-central-1.amazonaws.com/geohash:1.1
           resources:
             limits:
               memory: "356Mi"
