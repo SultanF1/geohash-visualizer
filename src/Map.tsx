@@ -47,6 +47,7 @@ function MyComponent() {
 
         if (updateNorthWest || updateSouthEast) {
             map.fitBounds([[area.start.lat, area.start.lng], [area.end.lat, area.end.lng]])
+            map.fitBounds([[area.start.lat, area.start.lng], [area.end.lat, area.end.lng]])
         }
 
         setLastGeoHash(currentGeohash)
@@ -60,14 +61,12 @@ function MyComponent() {
 
     useEffect(() => {
         map.eachLayer(function (layer) {
-            // @ts-ignore
             if (layer instanceof L.Polygon && layer['_geohash'] == null) {
                 const bounds = layer.getBounds()
                 layer.bindPopup(`east: ${bounds.getEast()}<br>west: ${bounds.getWest()}<br>north: ${bounds.getNorth()}<br>south: ${bounds.getSouth()}`).openPopup()
                 layer.setStyle({color: 'green'})
 
                 map.fitBounds(layer.getBounds())
-
             }
         })
 
@@ -76,7 +75,6 @@ function MyComponent() {
 
     useEffect(() => {
         map.eachLayer(function (layer) {
-            // @ts-ignore
             if (layer instanceof L.Rectangle && layer['_isBounds']) {
                 map.removeLayer(layer)
             }
@@ -92,7 +90,7 @@ function MyComponent() {
         const west = parseFloat(searchParams.get("west") || "")
 
         const rectangle = L.rectangle([[north, west], [south, east]], {color: "red", weight: 1});
-        // @ts-ignore
+
         rectangle['_isBounds'] = true
 
         rectangle.bindPopup(`east: ${east}<br>west: ${west}<br>north: ${north}<br>south: ${south}`).openPopup()

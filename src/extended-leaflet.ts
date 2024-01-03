@@ -14,7 +14,6 @@ export let ExtendSVG = L.SVG.extend({
     },
 
     _initPath: function (layer: any) {
-        // @ts-ignore
         L.SVG.prototype['_initPath'].call(this, layer);
         var label = layer._label = L.SVG.create('text');
         if (this._msie) {
@@ -24,13 +23,11 @@ export let ExtendSVG = L.SVG.extend({
         }
     },
     _addPath: function (layer:any) {
-        // @ts-ignore
         L.SVG.prototype['_addPath'].call(this, layer);
         this._rootGroup.appendChild(layer._label);
     },
 
     _removePath: function (layer:any) {
-        // @ts-ignore
         L.SVG.prototype['_removePath'].call(this, layer);
         L.DomUtil.remove(layer._label);
     },

@@ -14,15 +14,15 @@ export class Grid {
     private map: L.Map
 
     private area: L.LatLngBoundsLiteral
-    // @ts-ignore
-    private rectangle: Rectangle
+
+    private rectangle: L.Rectangle | undefined
 
     private children: {} = {}
 
     private listener: (target: GridTarget) => void
 
-    // @ts-ignore
-    constructor(map: L.Map, area: L.LatLngBoundsLiteral, listener: (target: GridTarget) => void = null) {
+
+    constructor(map: L.Map, area: L.LatLngBoundsLiteral, listener: (target: GridTarget) => void) {
         this.map = map
         this.area = area
         this.listener = listener
@@ -35,7 +35,7 @@ export class Grid {
         }
         if (!this.rectangle) {
             this.rectangle = L.rectangle(this.area, { renderer: Grid.renderer })
-            // @ts-ignore
+
             this.rectangle['_text'] = label
             this.rectangle['_geohash'] = geohash
 
@@ -115,9 +115,7 @@ export class Grid {
                 const area: L.LatLngBoundsLiteral = [[rectLatStart, rectLngStart], [rectLatEnd, rectLngEnd]]
                 const latter = geohashDict.charAt(columnsNumber * y + x)
 
-                // @ts-ignore
                 let subitem = this.children[latter] ? this.children[latter] : new Grid(this.map, area, this.listener)
-                // @ts-ignore
                 this.children[latter] = subitem
                 if (latter == geohash[offset]) {
                     targetArea = subitem.displayGrid(geohash, offset + 1)
@@ -132,18 +130,11 @@ export class Grid {
 
     remove() {
         this.rectangle && this.rectangle.remove()
-        // @ts-ignore
-        this.rectangle = null
+        this.rectangle = undefined
         for (const key of Object.keys(this.children)) {
-
-            // @ts-ignore
             this.children[key].remove()
         }
         this.children = {}
     }
 
-
-    displayTemp(geohash: string) {
-        this.displayGrid(geohash + "-")
-    }
 }

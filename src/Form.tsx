@@ -95,13 +95,11 @@ function Form() {
                         geohashInput ? clearGeohash() : clearCoordinates()
                     }}
                     type="default"
-                    // make the background color white
                     style={{width: "15%", backgroundColor: "white"}}
                 >
                     {geohashInput ? "Coordinates" : "Geohash"}
                 </Button>
             </div>
-
         </>
     );
 }
