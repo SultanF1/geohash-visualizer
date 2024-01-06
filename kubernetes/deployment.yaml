@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: geohash
-          image: 317481732767.dkr.ecr.eu-central-1.amazonaws.com/geohash:1.3
+          image: 317481732767.dkr.ecr.eu-central-1.amazonaws.com/geohash:1.4
           resources:
             limits:
               memory: "356Mi"

@@ -77,7 +77,7 @@ function MapHandler() {
 
     useEffect(() => {
         map.eachLayer(function (layer) {
-            if (layer instanceof L.Polygon && layer['_bounds'] == true) {
+            if (layer instanceof L.Polygon && layer['_isBounds'] == true) {
                 map.removeLayer(layer)
             }
         })
