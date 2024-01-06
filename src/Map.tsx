@@ -10,17 +10,33 @@ import {useSearchParams} from "react-router-dom";
 import {EditControl} from "react-leaflet-draw";
 import Form from "./Form";
 import {Flex} from "antd";
+import {getValidGeohashes, getGeohashesInBbox} from "./Utils";
 
-function MyComponent() {
+function MapHandler() {
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const [lastGeoHash, setLastGeoHash] = useState<string>(searchParams.get("geohash") || "")
+    const [lastGeoHash, setLastGeoHash] = useState<string>("")
     const map = useMap()
     let gridManager = new Grid(map, [[90, -180], [-90, 180]], (target: GridTarget) => {
         setSearchParams({geohash: target.geohash})
     })
 
+
     useEffect(() => {
+        setSearchParams({geohash: ""})
+    }, []);
+
+
+
+    useEffect(() => {
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Rectangle && layer['_isBounds'] == true) {
+                map.removeLayer(layer)
+            }
+        }
+        )
+
+
         const currentGeohash = searchParams.get("geohash") || ""
 
         if (currentGeohash.length > 4)
@@ -74,29 +90,38 @@ function MyComponent() {
 
 
     useEffect(() => {
+        if(![searchParams.get("north"), searchParams.get("south"), searchParams.get("east"), searchParams.get("west")].every((value) => {
+            return value != null && value != "" && !isNaN(parseFloat(value))
+        })) {
+            map.fitBounds([[90, -180], [-90, 180]])
+            return
+        }
+
         map.eachLayer(function (layer) {
-            if (layer instanceof L.Rectangle && layer['_isBounds']) {
+            if (layer instanceof L.Rectangle) {
                 map.removeLayer(layer)
             }
         })
 
-
-        if (searchParams.get("north") == null || searchParams.get("south") == null || searchParams.get("east") == null || searchParams.get("west") == null)
-            return
 
         const north = parseFloat(searchParams.get("north") || "")
         const south = parseFloat(searchParams.get("south") || "")
         const east = parseFloat(searchParams.get("east") || "")
         const west = parseFloat(searchParams.get("west") || "")
 
-        const rectangle = L.rectangle([[north, west], [south, east]], {color: "red", weight: 1});
+        const latLngBounds = L.latLngBounds([[north, west], [south, east]])
+
+        const rectangle = L.rectangle(latLngBounds, {color: 'red'})
 
         rectangle['_isBounds'] = true
 
-        rectangle.bindPopup(`east: ${east}<br>west: ${west}<br>north: ${north}<br>south: ${south}`).openPopup()
-
         rectangle.addTo(map)
 
+        let geohashesInsideBox = getGeohashesInBbox(west, south, east, north)
+
+        rectangle.bindPopup(`valid_partitions = ${geohashesInsideBox.join(', ')}`).openPopup()
+
+        map.fitBounds(rectangle.getBounds())
         map.fitBounds(rectangle.getBounds())
 
     }, [searchParams.get("north"), searchParams.get("south"), searchParams.get("east"), searchParams.get("west")])
@@ -107,7 +132,7 @@ function MyComponent() {
     return null
 }
 
-function MyMapComponent() {
+function Map() {
     const [searchParams, setSearchParams] = useSearchParams();
     const _created = (e: any) => {
         let numDrawings = parseInt(searchParams.get("numDrawings") || "0")
@@ -129,7 +154,7 @@ function MyMapComponent() {
                 <Form/>
             </div>
             <MapContainer center={[24, 46]} zoom={10} scrollWheelZoom={false}>
-                <MyComponent/>
+                <MapHandler/>
                 <FeatureGroup>
                     <EditControl
                         position="topright"
@@ -154,4 +179,4 @@ function MyMapComponent() {
     )
 }
 
-export default MyMapComponent;
+export default Map;

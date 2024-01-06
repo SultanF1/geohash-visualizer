@@ -1,5 +1,6 @@
 import * as L from 'leaflet'
 import { ExtendSVG } from './extended-leaflet'
+import { getValidGeohashes} from "./Utils";
 
 export interface GridTarget {
     area: L.LatLngBoundsLiteral
@@ -54,9 +55,10 @@ export class Grid {
             this.rectangle.addEventListener('contextmenu', (e: { target: { [x: string]: any; }; }) => {
                 const bounds = e.target['_bounds']
                 const center = bounds.getCenter()
+                const validGeohashes = getValidGeohashes(geohash)
                 const popup = L.popup()
                     .setLatLng(center)
-                    .setContent(`valid_partition = ${geohash.substring(0,2)}`)
+                    .setContent(`valid_partitions = ${validGeohashes.join(', ')}`)
                     .openOn(this.map);
             })
 
