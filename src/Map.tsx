@@ -77,11 +77,18 @@ function MapHandler() {
 
     useEffect(() => {
         map.eachLayer(function (layer) {
+            if (layer instanceof L.Polygon && layer['_bounds'] == true) {
+                map.removeLayer(layer)
+            }
+        })
+
+        map.eachLayer(function (layer) {
             if (layer instanceof L.Polygon && layer['_geohash'] == null) {
                 const bounds = layer.getBounds()
-                layer.bindPopup(`east: ${bounds.getEast()}<br>west: ${bounds.getWest()}<br>north: ${bounds.getNorth()}<br>south: ${bounds.getSouth()}`).openPopup()
+                layer.bindPopup(`east: ${bounds.getEast()}<br>west: ${bounds.getWest()}<br>north: ${bounds.getNorth()}<br>south: ${bounds.getSouth()}`)
                 layer.setStyle({color: 'green'})
 
+                map.fitBounds(layer.getBounds())
                 map.fitBounds(layer.getBounds())
             }
         })
@@ -94,6 +101,10 @@ function MapHandler() {
             return value != null && value != "" && !isNaN(parseFloat(value))
         })) {
             map.fitBounds([[90, -180], [-90, 180]])
+            return
+        }
+
+        if(parseFloat(searchParams.get("north") || "") < parseFloat(searchParams.get("south") || "") || parseFloat(searchParams.get("east") || "") < parseFloat(searchParams.get("west") || "")) {
             return
         }
 
@@ -137,12 +148,7 @@ function Map() {
     const _created = (e: any) => {
         let numDrawings = parseInt(searchParams.get("numDrawings") || "0")
         numDrawings += 1
-        setSearchParams(
-            {
-                numDrawings: numDrawings.toString(),
-                geohash: searchParams.get("geohash") || "",
-            }
-        )
+        setSearchParams({numDrawings: numDrawings.toString()})
     }
 
     return (

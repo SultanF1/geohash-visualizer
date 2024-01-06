@@ -38,6 +38,17 @@ export function getValidGeohashes(geohash: string): string[] {
         "th3j"
     ]
     console.log("getValidGeohashes() geohash: ", geohash)
+
+
+    if (geohash.length === 5) {
+        const includes4 = listOfValidGeohashes.includes(geohash.slice(0, 4))
+
+        if (includes4)
+            return [geohash.slice(0, 4)]
+        else
+            return [geohash.slice(0, 2)]
+    }
+
     if (geohash.length === 4) {
         let validGeohashes = listOfValidGeohashes
             .filter((validGeohash) => validGeohash.startsWith(geohash))
@@ -55,6 +66,11 @@ export function getValidGeohashes(geohash: string): string[] {
 
 
     if (geohash.length === 2) {
+        return listOfValidGeohashes
+            .filter((validGeohash) => validGeohash.startsWith(geohash))
+    }
+
+    if (geohash.length === 1) {
         return listOfValidGeohashes
             .filter((validGeohash) => validGeohash.startsWith(geohash))
     }
