@@ -1,1 +1,1 @@
-http://a4b65acbc26804439855b6cafdb005ba-38893054.eu-central-1.elb.amazonaws.com/?geohash=
+https://geohash-visualizer.vercel.app
